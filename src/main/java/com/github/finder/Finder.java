@@ -3,6 +3,8 @@ package com.github.finder;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class Finder {
     private Args args;
@@ -88,6 +90,20 @@ private boolean isTarget(File file){
     private boolean checkTargetName(File file, String pattern){
         String name = file.getName();
         return name.indexOf(pattern) >= 0;
+    }
+
+    private boolean checkGrep(File file, String pattern){
+	if(file.isFile()){
+            try(BufferedReader in = new BufferedReader(new FileReader(file))){
+		    String line;
+		    while((line = in.readLine()) != null){
+			if(line.indexOf(pattern) >= 0){
+			    return true;
+			}
+		    }
+		} catch(Exception e){}
+        }
+        return false;
     }
     
     private void traverse(List<String> list, File dir){
